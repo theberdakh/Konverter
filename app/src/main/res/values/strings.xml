@@ -1,0 +1,21 @@
+<resources>
+    <string name="app_name">Konverter</string>
+
+    <string-array name="Temperature">
+        <item>Celsiy</item>
+        <item>Farangeit</item>
+        <item>Kelvin</item>
+    </string-array>
+
+    <string-array name="Weight">
+        <item>Kilogram</item>
+        <item>Gram</item>
+        <item>Tonna</item>
+    </string-array>
+
+    <string-array name="Length">
+        <item>Metr</item>
+        <item>Santimetr</item>
+        <item>Kilometr</item>
+    </string-array>
+</resources>

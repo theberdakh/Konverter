@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_host"
+    app:startDestination="@id/menuFragment">
+
+    <fragment
+        android:id="@+id/menuFragment"
+        android:name="com.theberdakh.konverter.ui.MenuFragment"
+        android:label="MenuFragment"
+        tools:layout="@layout/fragment_menu">
+        <action
+            android:id="@+id/action_menuFragment_to_convertFragment"
+            app:destination="@id/convertFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/convertFragment"
+        android:name="com.theberdakh.konverter.ui.ConvertFragment"
+        android:label="ConvertFragment"
+        tools:layout="@layout/fragment_convert">
+        <argument
+            android:name="MenuItem"
+            app:argType="com.theberdakh.konverter.data.model.MenuItem" />
+    </fragment>
+</navigation>
