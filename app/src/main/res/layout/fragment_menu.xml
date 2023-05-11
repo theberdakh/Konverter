@@ -6,11 +6,14 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/tb_menu"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:title="Konverter"
         app:titleTextColor="?colorSurface"
-        android:background="?colorPrimaryVariant"/>
+        android:background="?colorPrimaryVariant"
+        app:menu="@menu/menu_up"
+        />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_menu"

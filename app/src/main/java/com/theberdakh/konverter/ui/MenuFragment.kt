@@ -9,6 +9,7 @@ import com.theberdakh.konverter.R
 import com.theberdakh.konverter.data.model.MenuItemList
 import com.theberdakh.konverter.databinding.FragmentMenuBinding
 import com.theberdakh.konverter.ui.adapter.MenuItemAdapter
+import com.theberdakh.konverter.util.shareLink
 
 class MenuFragment: Fragment(R.layout.fragment_menu) {
     private lateinit var binding: FragmentMenuBinding
@@ -30,6 +31,16 @@ class MenuFragment: Fragment(R.layout.fragment_menu) {
     private fun initListeners() {
         adapter.setOnMenuItemClickListener {
             navController.navigate(MenuFragmentDirections.actionMenuFragmentToConvertFragment(it))
+        }
+
+        binding.tbMenu.setOnMenuItemClickListener { item->
+            when(item.itemId){
+                R.id.action_share -> {
+                    requireContext().shareLink("https://github.com/theberdakh/Konverter")
+                    true
+                }
+                else -> true
+            }
         }
     }
 

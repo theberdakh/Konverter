@@ -8,15 +8,16 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.theberdakh.konverter.R
+import com.theberdakh.konverter.data.converter.ConverterFactory
 import com.theberdakh.konverter.data.model.MenuItem
+import com.theberdakh.konverter.data.model.SignList
 import com.theberdakh.konverter.databinding.FragmentConvertBinding
-import com.theberdakh.konverter.ui.util.*
-import com.theberdakh.konverter.util.hideKeyboard
+import com.theberdakh.konverter.util.*
 
 
 class ConvertFragment : Fragment(R.layout.fragment_convert) {
     private lateinit var binding: FragmentConvertBinding
-    private var _adapter: ArrayAdapter<String>? =null
+    private var _adapter: ArrayAdapter<String>? = null
     private val adapter get() = _adapter!!
 
 
@@ -32,17 +33,10 @@ class ConvertFragment : Fragment(R.layout.fragment_convert) {
     }
 
     private fun initViews(menuItem: MenuItem) {
-        val temperatureSigns = resources.getStringArray(R.array.Temperature)
-        val weightSigns = resources.getStringArray(R.array.Weight)
-        val lengthSigns = resources.getStringArray(R.array.Length)
 
         binding.tbConvert.title = menuItem.title
 
-        val signs = when (menuItem.id) {
-            1 -> temperatureSigns
-            2 -> weightSigns
-            else -> lengthSigns
-        }
+        val signs = SignList.getSignList(menuItem.id)
 
         _adapter = ArrayAdapter<String>(requireContext(), R.layout.item_dropdown, signs)
 
@@ -59,17 +53,16 @@ class ConvertFragment : Fragment(R.layout.fragment_convert) {
                 val firstName = binding.autoFirstSign.text
                 val secondName = binding.autoSecondSign.text
 
-              val answer =  if (!binding.etFirstNumber.text.isNullOrEmpty()){
-                      calculate(
+                val answer = if (!binding.etFirstNumber.text.isNullOrEmpty()) {
+                    calculate(
                         firstName.toString(),
                         secondName.toString(),
                         binding.etFirstNumber.text.toString().toDouble(),
                         menuItem
                     ).toInteger().toString()
+                } else {
+                    Constants.EMPTY_STRING
                 }
-                 else {
-                     Constants.EMPTY_STRING
-              }
 
                 binding.etSecondNumber.setText(answer)
             }
@@ -78,25 +71,19 @@ class ConvertFragment : Fragment(R.layout.fragment_convert) {
 
     }
 
-    private fun initListeners(
-        menuItem: MenuItem
-    )
-    {
+    private fun initListeners(menuItem: MenuItem) {
         binding.etFirstNumber.doAfterTextChanged {
-            val firstName = binding.autoFirstSign.text
-            val secondName = binding.autoSecondSign.text
 
+            val firstName = binding.autoFirstSign.text.toString()
+            val secondName = binding.autoSecondSign.text.toString()
+            val firstValue = it.toString().checkSign()
 
-
-            val answer: String = if (it != null && it.isNotEmpty() && it.first() != '.')
-                calculate(
-                    firstName.toString(),
-                    secondName.toString(),
-                    it.toString().checkSign(),
-                    menuItem
-                ).toInteger().toString()
-             else
-                Constants.EMPTY_STRING
+            val answer: String = if (checkEditable(it)) calculate(
+                firstName,
+                secondName,
+                firstValue,
+                menuItem
+            ).toInteger().toString() else Constants.EMPTY_STRING
 
             binding.etSecondNumber.setText(answer)
         }
@@ -105,8 +92,6 @@ class ConvertFragment : Fragment(R.layout.fragment_convert) {
         binding.tbConvert.setNavigationOnClickListener {
             findNavController().popBackStack()
         }
-
-
 
     }
 
@@ -117,44 +102,10 @@ class ConvertFragment : Fragment(R.layout.fragment_convert) {
         menuItem: MenuItem
     ): Double {
 
-        return when (menuItem.id) {
-            1 -> convertTemperature(first, second, value)
-            2 -> convertWeight(first, second, value)
-            else -> convertLength(first, second, value)
-        }
-
-
+        val factory = ConverterFactory()
+        val converter = factory.createConverter(menuItem.id)
+        return converter.convert(first, second, value)
     }
 
-    private fun convertLength(first: String, second: String, value: Double): Double {
-        return 0.0
-    }
-
-    private fun convertWeight(first: String, second: String, value: Double): Double {
-        return 0.0
-    }
-
-    private fun convertTemperature(
-        first: String,
-        second: String,
-        value: Double
-    ): Double {
-
-
-        return when {
-            first == Constants.CELSIUS && second == Constants.CELSIUS -> value.toCelsius(Constants.CELSIUS)
-            first == Constants.KELVIN && second == Constants.CELSIUS -> value.toCelsius(Constants.KELVIN)
-            first == Constants.FAHRENHEIT && second == Constants.CELSIUS -> value.toCelsius(Constants.FAHRENHEIT)
-
-            first == Constants.CELSIUS && second == Constants.KELVIN -> value.toKelvin(Constants.CELSIUS)
-            first == Constants.KELVIN && second == Constants.KELVIN -> value.toKelvin(Constants.KELVIN)
-            first == Constants.FAHRENHEIT && second == Constants.KELVIN -> value.toKelvin(Constants.FAHRENHEIT)
-
-            first == Constants.CELSIUS && second == Constants.FAHRENHEIT -> value.toFahrenheit(Constants.CELSIUS)
-            first == Constants.KELVIN && second == Constants.FAHRENHEIT -> value.toFahrenheit(Constants.KELVIN)
-            first == Constants.FAHRENHEIT && second == Constants.FAHRENHEIT -> value.toFahrenheit(Constants.FAHRENHEIT)
-            else -> 0.0
-        }
-    }
 
 }

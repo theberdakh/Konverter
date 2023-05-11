@@ -1,4 +1,7 @@
-package com.theberdakh.konverter.ui.util
+package com.theberdakh.konverter.data.converter.temperature
+
+import com.theberdakh.konverter.util.Constants
+
 
 fun Double.toFahrenheit(from: String): Double {
     return when (from) {
@@ -24,12 +27,4 @@ fun Double.toKelvin(from: String): Double {
     }
 }
 
-fun Double.toInteger(): Number {
-    return if (this % 1 == 0.0) {
-        this.toInt()
-    } else this
-}
 
-fun String.checkSign(): Double {
-    return if (this.length==1 && this.first() == '-') -0.0 else this.toDouble()
-}
